@@ -83,7 +83,11 @@ En cas d’échec d’une recherche distante, la recherche locale porte sur le s
 
 ## Explorer
 
-L’écran Explorer recherche des actions et des ETF via `MarketDataRepository`. Les widgets n’appellent ni Dio ni Drift. La saisie est nettoyée, ignorée si elle est vide, puis retardée de 400 ms avant l’appel. `CachedResult` indique si la liste vient du cache, si elle est ancienne, et la date de dernière synchronisation. Une actualisation manuelle utilise `forceRefresh`. Une fiche temporaire `/explorer/:symbol` valide la navigation ; la fiche complète n’est pas encore développée. La recherche ne demande pas plus de cinq profils pour résoudre le type d’instrument.
+L’écran Explorer recherche des actions et des ETF via `MarketDataRepository`. Les widgets n’appellent ni Dio ni Drift. La saisie est nettoyée, ignorée si elle est vide, puis retardée de 400 ms avant l’appel. `CachedResult` indique si la liste vient du cache, si elle est ancienne, et la date de dernière synchronisation. Une actualisation manuelle utilise `forceRefresh`. Ouvrir un résultat affiche la fiche `/explorer/:symbol`. La recherche ne demande pas plus de cinq profils pour résoudre le type d’instrument.
+
+## Fiche d’un actif
+
+La fiche charge le profil, la dernière cotation et un an d’historique via `MarketDataRepository`. Les trois lectures partent en parallèle : l’échec de l’une n’efface pas les autres. Les périodes 1 mois, 3 mois et 1 an filtrent cet historique déjà chargé. Une actualisation manuelle relance les trois lectures avec `forceRefresh` sans retirer les données encore visibles. Le graphique trace uniquement les cours de clôture reçus.
 
 ### Génération et tests
 
