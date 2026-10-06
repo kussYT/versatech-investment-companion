@@ -193,7 +193,7 @@ void main() {
     expect(find.byKey(const ValueKey('asset-AAPL')), findsOneWidget);
   });
 
-  testWidgets('opens the temporary asset page for the selected symbol',
+  testWidgets('opens the asset detail page for the selected symbol',
       (tester) async {
     await _openExplorer(
       tester,
@@ -206,8 +206,9 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('asset-BRK.B')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Fiche de BRK.B'), findsOneWidget);
+    expect(find.text('Historique des clôtures'), findsOneWidget);
     expect(find.text('BRK.B'), findsWidgets);
+    expect(find.text('Action'), findsWidgets);
   });
 }
 
@@ -256,16 +257,38 @@ class _ScriptedRepository implements MarketDataRepository {
   Future<CachedResult<AssetProfile>> getProfile(
     String symbol, {
     bool forceRefresh = false,
-  }) {
-    throw UnimplementedError();
+  }) async {
+    return CachedResult(
+      data: AssetProfile(
+        symbol: symbol,
+        companyName: 'Berkshire Hathaway',
+        description: 'Groupe diversifié.',
+        currency: 'USD',
+        exchange: 'NYSE',
+      ),
+      origin: DataOrigin.cache,
+      lastUpdatedAt: DateTime.utc(2024, 6, 3, 12),
+      isStale: false,
+    );
   }
 
   @override
   Future<CachedResult<MarketQuote>> getQuote(
     String symbol, {
     bool forceRefresh = false,
-  }) {
-    throw UnimplementedError();
+  }) async {
+    return CachedResult(
+      data: MarketQuote(
+        symbol: symbol,
+        price: 410,
+        change: 1,
+        changePercent: 0.2,
+        timestamp: DateTime.utc(2024, 6, 3, 20),
+      ),
+      origin: DataOrigin.cache,
+      lastUpdatedAt: DateTime.utc(2024, 6, 3, 12),
+      isStale: false,
+    );
   }
 
   @override
@@ -274,8 +297,23 @@ class _ScriptedRepository implements MarketDataRepository {
     required DateTime from,
     required DateTime to,
     bool forceRefresh = false,
-  }) {
-    throw UnimplementedError();
+  }) async {
+    return CachedResult(
+      data: [
+        HistoricalPrice(
+          symbol: symbol,
+          date: to,
+          open: 400,
+          high: 412,
+          low: 398,
+          close: 410,
+          volume: 1,
+        ),
+      ],
+      origin: DataOrigin.cache,
+      lastUpdatedAt: DateTime.utc(2024, 6, 3, 12),
+      isStale: false,
+    );
   }
 }
 
