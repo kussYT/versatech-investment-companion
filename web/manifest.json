@@ -1,11 +1,11 @@
 {
-    "name": "companion",
-    "short_name": "companion",
+    "name": "VersaTech Investment Companion",
+    "short_name": "VersaTech",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#050814",
+    "theme_color": "#4C7DFF",
+    "description": "Compagnon pédagogique pour découvrir les actions et les ETF.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
