@@ -8,7 +8,7 @@
 PRODUCT_NAME = VersaTech
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.companion.companion
+PRODUCT_BUNDLE_IDENTIFIER = com.versatech.investmentcompanion
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 com.companion. All rights reserved.
