@@ -7,9 +7,22 @@ import 'package:versatech_investment_companion/features/market_data/domain/entit
 import 'package:versatech_investment_companion/features/market_data/domain/entities/asset_profile.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/historical_price.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/market_quote.dart';
-import 'package:versatech_investment_companion/features/market_data/domain/repositories/market_data_repository.dart';
 
-class RemoteMarketDataRepository implements MarketDataRepository {
+abstract interface class MarketDataRemote {
+  Future<List<Asset>> searchAssets(String query);
+
+  Future<AssetProfile> getProfile(String symbol);
+
+  Future<MarketQuote> getQuote(String symbol);
+
+  Future<List<HistoricalPrice>> getHistoricalPrices({
+    required String symbol,
+    required DateTime from,
+    required DateTime to,
+  });
+}
+
+class RemoteMarketDataRepository implements MarketDataRemote {
   const RemoteMarketDataRepository({required FmpMarketDataSource dataSource})
       : _dataSource = dataSource;
 
@@ -54,13 +67,11 @@ class RemoteMarketDataRepository implements MarketDataRepository {
       throw mapDioException(error);
     } on FormatException {
       throw InvalidMarketDataException('The response was not valid JSON.');
-    } catch (_) {
-      throw const UnknownRemoteException();
     }
   }
 }
 
-final marketDataRepositoryProvider = Provider<MarketDataRepository>((ref) {
+final remoteMarketDataRepositoryProvider = Provider<MarketDataRemote>((ref) {
   return RemoteMarketDataRepository(
     dataSource: ref.watch(fmpMarketDataSourceProvider),
   );
