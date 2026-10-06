@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:versatech_investment_companion/app/router/app_shell.dart';
 import 'package:versatech_investment_companion/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:versatech_investment_companion/features/explorer/presentation/asset_preview_screen.dart';
 import 'package:versatech_investment_companion/features/explorer/presentation/explorer_screen.dart';
 import 'package:versatech_investment_companion/features/portfolio/presentation/portfolio_screen.dart';
 import 'package:versatech_investment_companion/features/simulator/presentation/simulator_screen.dart';
@@ -28,6 +29,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/explorer',
                 builder: (context, state) => const ExplorerScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':symbol',
+                    builder: (context, state) {
+                      final symbol = state.pathParameters['symbol'] ?? '';
+                      return AssetPreviewScreen(symbol: symbol);
+                    },
+                  ),
+                ],
               ),
             ],
           ),

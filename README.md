@@ -2,7 +2,7 @@
 
 Compagnon pédagogique pour les débutants en investissement. L’application permet d’explorer des actions et des ETF, de consulter leurs historiques, de gérer des favoris, de constituer un portefeuille fictif et de réaliser des simulations.
 
-Le socle visuel, la couche distante et le cache local des données de marché sont en place. L’écran Explorer, les favoris, le portefeuille et les calculs de simulation ne sont pas encore implémentés. Cette branche ne crée pas les tables du portefeuille, des transactions fictives ni des simulations.
+Le socle visuel, la couche distante, le cache local et l’écran Explorer sont en place. Les favoris, le portefeuille et les calculs de simulation ne sont pas encore implémentés. Cette branche ne crée pas les tables du portefeuille, des transactions fictives ni des simulations.
 
 ## Périmètre Actions et ETF
 
@@ -80,6 +80,10 @@ L’historique est considéré comme couvert lorsque la période demandée est c
 Le repli vers le cache concerne l’absence de réseau, le délai dépassé, la limitation temporaire, une erreur distante temporaire, une clé absente et un refus d’authentification. La cause reste visible, sans jamais exposer la clé. Une réponse introuvable, invalide ou d’un type non géré n’efface pas un cache valide et n’est pas transformée en succès local. Une recherche distante vide est une réponse valide : elle met à jour le résultat de cette recherche sans supprimer les autres actifs. Un historique distant vide n’efface pas les points déjà stockés.
 
 En cas d’échec d’une recherche distante, la recherche locale porte sur le symbole et le nom, sans tenir compte de la casse. Pour l’historique, seuls les points locaux réellement présents dans la période sont retournés.
+
+## Explorer
+
+L’écran Explorer recherche des actions et des ETF via `MarketDataRepository`. Les widgets n’appellent ni Dio ni Drift. La saisie est nettoyée, ignorée si elle est vide, puis retardée de 400 ms avant l’appel. `CachedResult` indique si la liste vient du cache, si elle est ancienne, et la date de dernière synchronisation. Une actualisation manuelle utilise `forceRefresh`. Une fiche temporaire `/explorer/:symbol` valide la navigation ; la fiche complète n’est pas encore développée. La recherche ne demande pas plus de cinq profils pour résoudre le type d’instrument.
 
 ### Génération et tests
 
