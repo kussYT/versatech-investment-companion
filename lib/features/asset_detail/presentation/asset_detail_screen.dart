@@ -7,6 +7,7 @@ import 'package:versatech_investment_companion/features/asset_detail/application
 import 'package:versatech_investment_companion/features/asset_detail/application/asset_detail_state.dart';
 import 'package:versatech_investment_companion/features/asset_detail/presentation/asset_detail_messages.dart';
 import 'package:versatech_investment_companion/features/asset_detail/presentation/asset_price_chart.dart';
+import 'package:versatech_investment_companion/features/favorites/presentation/favorite_button.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/asset.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/asset_profile.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/market_quote.dart';
@@ -61,6 +62,7 @@ class _AssetDetailScreenState extends ConsumerState<AssetDetailScreen> {
       appBar: AppBar(
         title: Text(title),
         actions: [
+          if (!state.invalid) FavoriteButton(symbol: state.symbol),
           if (!state.invalid)
             IconButton(
               key: const Key('asset-detail-refresh'),

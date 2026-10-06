@@ -17,6 +17,8 @@ import 'package:versatech_investment_companion/features/market_data/domain/entit
 import 'package:versatech_investment_companion/features/market_data/domain/entities/market_quote.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/repositories/market_data_repository.dart';
 
+import '../../support/memory_database.dart';
+
 void main() {
   test('translates failures without exposing technical details', () {
     expect(
@@ -219,6 +221,7 @@ Future<void> _openExplorer(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        emptyFavoritesOverride(),
         marketDataRepositoryProvider.overrideWithValue(repository),
         searchDebounceProvider.overrideWithValue(ImmediateSearchDebounce()),
       ],

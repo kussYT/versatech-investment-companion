@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:versatech_investment_companion/app/theme/app_colors.dart';
+import 'package:versatech_investment_companion/features/favorites/presentation/favorite_button.dart';
 import 'package:versatech_investment_companion/features/explorer/application/explorer_search_controller.dart';
 import 'package:versatech_investment_companion/features/explorer/application/explorer_search_state.dart';
 import 'package:versatech_investment_companion/features/explorer/presentation/explorer_messages.dart';
@@ -214,82 +215,92 @@ class _AssetCard extends StatelessWidget {
       if (currency.isNotEmpty) currency,
     ].join(' · ');
 
-    return Semantics(
-      button: true,
-      label: '${asset.symbol}, ${asset.name}, ${assetTypeLabel(asset.type)}',
-      child: Card(
-        child: InkWell(
-          key: ValueKey('asset-${asset.symbol}'),
-          borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            final type = asset.type == AssetType.etf ? 'etf' : 'stock';
-            final symbol = Uri.encodeComponent(asset.symbol);
-            context.push('/explorer/$symbol?type=$type');
-          },
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    return Card(
+      child: Row(
+        children: [
+          Expanded(
+            child: Semantics(
+              button: true,
+              label:
+                  '${asset.symbol}, ${asset.name}, ${assetTypeLabel(asset.type)}',
+              child: InkWell(
+                key: ValueKey('asset-${asset.symbol}'),
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(12),
+                ),
+                onTap: () {
+                  final type = asset.type == AssetType.etf ? 'etf' : 'stock';
+                  final symbol = Uri.encodeComponent(asset.symbol);
+                  context.push('/explorer/$symbol?type=$type');
+                },
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+                    child: Row(
                       children: [
-                        Text(
-                          asset.symbol,
-                          style: theme.textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          asset.name,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                asset.symbol,
+                                style: theme.textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                asset.name,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              if (details.isNotEmpty) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  details,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
-                        if (details.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            details,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+                        const SizedBox(width: 12),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: typeColor.withValues(alpha: 0.16),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 6,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(typeIcon, size: 16, color: typeColor),
+                                const SizedBox(width: 4),
+                                Text(
+                                  assetTypeLabel(asset.type),
+                                  style: theme.textTheme.labelLarge?.copyWith(
+                                    color: typeColor,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: typeColor.withValues(alpha: 0.16),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 6,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(typeIcon, size: 16, color: typeColor),
-                          const SizedBox(width: 4),
-                          Text(
-                            assetTypeLabel(asset.type),
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: typeColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          FavoriteButton(symbol: asset.symbol),
+        ],
       ),
     );
   }
