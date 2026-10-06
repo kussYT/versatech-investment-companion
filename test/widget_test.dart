@@ -1,30 +1,55 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:companion/main.dart';
+import 'package:versatech_investment_companion/app/app.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets(
+    'application starts and exposes four navigation destinations',
+    (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: VersaTechApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      expect(find.text('Accueil'), findsWidgets);
+      expect(find.text('Explorer'), findsOneWidget);
+      expect(find.text('Portefeuille'), findsOneWidget);
+      expect(find.text('Simulateur'), findsOneWidget);
+      expect(
+        find.text(
+          'Retrouvez une vue d\'ensemble pour apprendre à suivre des actions et des ETF.',
+        ),
+        findsOneWidget,
+      );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      await tester.tap(find.text('Explorer'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Parcourez des actions et des ETF afin d\'en comprendre les caractéristiques.',
+        ),
+        findsOneWidget,
+      );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+      await tester.tap(find.text('Portefeuille'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Composez un portefeuille fictif et observez sa répartition.',
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Simulateur'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Simulez un investissement pour visualiser son évolution dans le temps.',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
 }
