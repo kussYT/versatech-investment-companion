@@ -2,56 +2,89 @@
 
 Compagnon pédagogique pour les débutants en investissement. L’application permet d’explorer des actions et des ETF, de consulter leurs historiques, de gérer des favoris, de constituer un portefeuille fictif et de réaliser des simulations.
 
-Cette version pose uniquement le socle technique : navigation, thème et structure des écrans. Les données de marché, la persistance complète et les calculs métier ne sont pas encore implémentés.
+Le socle visuel et la couche distante des données de marché sont en place. L’écran Explorer, la persistance Drift, les favoris, le portefeuille et les calculs de simulation ne sont pas encore implémentés.
 
 ## Périmètre Actions et ETF
 
 Le produit se limite aux **actions** et aux **ETF**. Il n’y a pas de passage d’ordres réels : le portefeuille et les simulations restent fictifs et servent à apprendre.
 
+## Données de marché
+
+[Financial Modeling Prep](https://site.financialmodelingprep.com/developer/docs) est l’API REST retenue : une seule source couvre la recherche de symboles, le profil, la dernière cotation et l’historique de fin de journée, pour les actions comme pour les ETF.
+
+Les données utilisées sont :
+
+- le symbole, le nom, la place, la devise et le type (action ou ETF) ;
+- le profil : nom, description, secteur, industrie, site, image, devise et place ;
+- la dernière cotation : prix, variation, variation en pourcentage, clôture précédente et horodatage ;
+- l’historique quotidien : date, ouverture, plus haut, plus bas, clôture et volume.
+
+La clé n’est pas lue au démarrage. Elle est exigée seulement lorsqu’un appel distant est lancé. Passez-la à la compilation, sans la committer :
+
+```bash
+flutter run --dart-define=FMP_API_KEY=VOTRE_CLE
+```
+
+`VOTRE_CLE` est un exemple. Aucune clé réelle ne doit figurer dans le code, les tests, le README ou l’historique Git. Ne versionnez pas de fichier secret.
+
+Les réponses FMP sont des DTO. Ils sont convertis vers des entités de domaine indépendantes de Dio et de FMP. `FmpMarketDataSource` isole les chemins d’API. `MarketDataRepository` expose la recherche, le profil, la cotation et l’historique, et transforme les erreurs techniques en erreurs applicatives.
+
+Les endpoints et les limites du plan FMP devront être revérifiés : l’offre et les quotas changent, et un endpoint peut être restreint selon l’abonnement.
+
 ## Prérequis
 
 - Flutter stable **3.27.x** (Dart SDK `^3.6.1`, version vérifiée : Flutter 3.27.3 / Dart 3.6.1)
 - Un émulateur, un appareil ou une cible bureau prise en charge par Flutter
+- Une clé Financial Modeling Prep, fournie par `--dart-define` au moment d’interroger l’API
 
 ## Lancement
 
 ```bash
 flutter pub get
-flutter run
+flutter run --dart-define=FMP_API_KEY=VOTRE_CLE
 ```
 
-## Architecture initiale
+L’interface démarre aussi sans clé. Le premier appel de marché échoue alors avec une erreur de configuration.
+
+## Architecture
 
 ```text
 lib/
 ├── app/
 │   ├── app.dart
 │   ├── router/
-│   │   ├── app_router.dart
-│   │   └── app_shell.dart
 │   └── theme/
-│       ├── app_colors.dart
-│       └── app_theme.dart
 ├── core/
+│   ├── config/
+│   ├── errors/
+│   ├── network/
 │   └── widgets/
-│       └── feature_placeholder.dart
 ├── features/
 │   ├── dashboard/presentation/
 │   ├── explorer/presentation/
+│   ├── market_data/
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   ├── dto/
+│   │   │   ├── parsing/
+│   │   │   └── repositories/
+│   │   └── domain/
+│   │       ├── entities/
+│   │       └── repositories/
 │   ├── portfolio/presentation/
 │   └── simulator/presentation/
 └── main.dart
 ```
 
-La configuration de l’application, la navigation, le thème et les écrans sont séparés. Les dossiers `core/errors`, `core/network`, `core/database` et `core/utils` seront ajoutés lorsque ces couches existeront réellement.
+La configuration de l’application, la navigation, le thème, les écrans et les données de marché sont séparés. Le cache local et le schéma Drift seront ajoutés lorsque cette couche existera.
 
 ## Principales dépendances
 
 | Paquet | Rôle |
 | --- | --- |
-| `flutter_riverpod` | Injection de dépendances et état |
+| `flutter_riverpod` 2.6.1 | Injection de dépendances et état |
 | `go_router` | Navigation, dont la barre inférieure |
-| `dio` | Client HTTP, réservé aux futurs appels de marché |
+| `dio` 5.11.1 | Client HTTP vers Financial Modeling Prep |
 | `drift`, `sqlite3_flutter_libs`, `path_provider`, `path` | Persistance locale, pas encore branchée |
 | `fl_chart` | Graphiques des historiques et simulations |
 | `intl` | Formatage des nombres et des dates |
@@ -62,6 +95,6 @@ La configuration de l’application, la navigation, le thème et les écrans son
 ## Convention de branches Git
 
 - `main` : branche stable.
-- `feat/<sujet>` : nouvelle fonctionnalité ou socle, par exemple `feat/project-foundation`.
+- `feat/<sujet>` : nouvelle fonctionnalité ou socle, par exemple `feat/market-data-foundation`.
 - `fix/<sujet>` : correction.
 - Le travail se fait sur une branche dédiée. Une fonctionnalité n’est fusionnée dans `main` que lorsqu’elle est prête. Cette étape ne pousse rien vers un dépôt distant.
