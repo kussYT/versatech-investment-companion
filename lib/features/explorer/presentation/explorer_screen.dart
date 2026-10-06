@@ -222,7 +222,9 @@ class _AssetCard extends StatelessWidget {
           key: ValueKey('asset-${asset.symbol}'),
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            context.push('/explorer/${Uri.encodeComponent(asset.symbol)}');
+            final type = asset.type == AssetType.etf ? 'etf' : 'stock';
+            final symbol = Uri.encodeComponent(asset.symbol);
+            context.push('/explorer/$symbol?type=$type');
           },
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
