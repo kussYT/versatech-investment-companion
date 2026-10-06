@@ -84,30 +84,6 @@ void main() {
     expect(assets.single.symbol, 'SPY');
   });
 
-  test('caps untyped profile lookups at five results', () async {
-    const symbols = ['AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF'];
-    final config = const AppConfig(apiKey: fakeKey);
-    final dio = createFmpDio(config);
-    final adapter = _ScriptedFmpAdapter([
-      '[${symbols.map(_searchRow).join(',')}]',
-      for (final symbol in symbols.take(5)) _profileTypeRow(symbol),
-    ]);
-    dio.httpClientAdapter = adapter;
-    final source = FmpMarketDataSource(dio: dio, config: config);
-
-    final assets = await source.searchAssets('A');
-
-    expect(adapter.requests, hasLength(6));
-    expect(adapter.requests.first.uri.path, '/stable/search-symbol');
-    expect(
-      adapter.requests.skip(1).map((request) => request.uri.path),
-      everyElement('/stable/profile'),
-    );
-    expect(assets.map((asset) => asset.symbol),
-        ['AAA', 'BBB', 'CCC', 'DDD', 'EEE']);
-    expect(assets.every((asset) => asset.type == AssetType.stock), isTrue);
-  });
-
   test('returns an empty quote lookup as not found', () async {
     final config = const AppConfig(apiKey: fakeKey);
     final dio = createFmpDio(config);
@@ -148,18 +124,6 @@ class _ScriptedFmpAdapter implements HttpClientAdapter {
 
   @override
   void close({bool force = false}) {}
-}
-
-String _searchRow(String symbol) {
-  return '''
-{"symbol":"$symbol","name":"$symbol Corp","currency":"USD","exchange":"NYSE"}
-''';
-}
-
-String _profileTypeRow(String symbol) {
-  return '''
-[{"symbol":"$symbol","isEtf":false,"isFund":false}]
-''';
 }
 
 class _FailingAdapter implements HttpClientAdapter {

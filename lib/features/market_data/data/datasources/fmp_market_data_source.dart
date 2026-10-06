@@ -33,12 +33,6 @@ class FmpMarketDataSource {
   static const historicalPath = 'historical-price-eod/full';
   static const searchLimit = 20;
 
-  /// `search-symbol` does not publish `isEtf`. Each untyped hit needs a
-  /// profile request. The lookup stays in this source, and it is capped so
-  /// one search cannot spend dozens of quota units. Further untyped hits are
-  /// omitted instead of being labeled as stocks.
-  static const maxUntypedProfileLookups = 5;
-
   final Dio _dio;
   final AppConfig _config;
 
@@ -51,18 +45,10 @@ class FmpMarketDataSource {
     );
 
     final assets = <Asset>[];
-    var profileLookups = 0;
     for (final row in rows) {
-      final json = asJsonMap(row, 'asset');
-      if (json['isEtf'] is! bool) {
-        if (profileLookups >= maxUntypedProfileLookups) {
-          continue;
-        }
-        profileLookups++;
-      }
-      final typed = await _withInstrumentType(json);
+      final json = await _withInstrumentType(asJsonMap(row, 'asset'));
       try {
-        assets.add(AssetDto.fromJson(typed).toDomain());
+        assets.add(AssetDto.fromJson(json).toDomain());
       } on UnsupportedAssetTypeException {
         continue;
       }
