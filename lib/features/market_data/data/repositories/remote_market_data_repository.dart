@@ -9,7 +9,7 @@ import 'package:versatech_investment_companion/features/market_data/domain/entit
 import 'package:versatech_investment_companion/features/market_data/domain/entities/market_quote.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/repositories/market_data_repository.dart';
 
-class RemoteMarketDataRepository implements MarketDataRepository {
+class RemoteMarketDataRepository implements MarketDataRemote {
   const RemoteMarketDataRepository({required FmpMarketDataSource dataSource})
       : _dataSource = dataSource;
 
@@ -60,7 +60,7 @@ class RemoteMarketDataRepository implements MarketDataRepository {
   }
 }
 
-final marketDataRepositoryProvider = Provider<MarketDataRepository>((ref) {
+final remoteMarketDataRepositoryProvider = Provider<MarketDataRemote>((ref) {
   return RemoteMarketDataRepository(
     dataSource: ref.watch(fmpMarketDataSourceProvider),
   );

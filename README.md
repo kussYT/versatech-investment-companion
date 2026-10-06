@@ -2,7 +2,7 @@
 
 Compagnon pédagogique pour les débutants en investissement. L’application permet d’explorer des actions et des ETF, de consulter leurs historiques, de gérer des favoris, de constituer un portefeuille fictif et de réaliser des simulations.
 
-Le socle visuel et la couche distante des données de marché sont en place. L’écran Explorer, la persistance Drift, les favoris, le portefeuille et les calculs de simulation ne sont pas encore implémentés.
+Le socle visuel, l’écran Explorer, la fiche d’actif et le cache Drift sont en place. Les favoris persistants sont désormais disponibles : ils sont enregistrés dans la base locale, restent consultables hors connexion et ne dépendent pas de Financial Modeling Prep. Le portefeuille fictif et les simulations ne sont pas encore implémentés.
 
 ## Périmètre Actions et ETF
 
@@ -85,7 +85,7 @@ La configuration de l’application, la navigation, le thème, les écrans et le
 | `flutter_riverpod` 2.6.1 | Injection de dépendances et état |
 | `go_router` | Navigation, dont la barre inférieure |
 | `dio` 5.11.1 | Client HTTP vers Financial Modeling Prep |
-| `drift`, `sqlite3_flutter_libs`, `path_provider`, `path` | Persistance locale, pas encore branchée |
+| `drift`, `sqlite3_flutter_libs`, `path_provider`, `path` | Cache de marché et favoris locaux |
 | `fl_chart` | Graphiques des historiques et simulations |
 | `intl` | Formatage des nombres et des dates |
 | `build_runner`, `drift_dev` | Génération de code Drift |

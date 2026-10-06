@@ -6,7 +6,7 @@ import 'package:versatech_investment_companion/core/errors/app_exception.dart';
 import 'package:versatech_investment_companion/core/errors/failure.dart';
 import 'package:versatech_investment_companion/features/market_data/data/datasources/local_market_data_source.dart';
 import 'package:versatech_investment_companion/features/market_data/data/repositories/cached_market_data_repository.dart';
-import 'package:versatech_investment_companion/features/market_data/data/repositories/remote_market_data_repository.dart';
+import 'package:versatech_investment_companion/features/market_data/domain/repositories/market_data_repository.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/cache/cache_policy.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/cache/cached_result.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/asset.dart';

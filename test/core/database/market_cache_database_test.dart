@@ -37,8 +37,8 @@ void main() {
   });
 
   test('schema version is explicit', () {
-    expect(database.schemaVersion, 1);
-    expect(AppDatabase.latestSchemaVersion, 1);
+    expect(database.schemaVersion, 2);
+    expect(AppDatabase.latestSchemaVersion, 2);
   });
 
   test('inserts and reads an asset', () async {
@@ -310,6 +310,78 @@ void main() {
     expect(await local.readQuote('AAPL'), isNull);
     expect(await local.findAsset('MSFT'), isNotNull);
   });
+
+  test('migrates a schema 1 cache without deleting stored market data',
+      () async {
+    final directory = await Directory.systemTemp.createTemp(
+      'versatech_schema1_',
+    );
+    final file = File(p.join(directory.path, 'cache.sqlite'));
+    final legacy = _LegacyMarketCacheDatabase(NativeDatabase(file));
+    try {
+      final legacyLocal = LocalMarketDataSource(legacy.marketDataDao);
+      await _saveAssets(legacyLocal, [_asset()]);
+      await legacyLocal.saveProfile(_profile(), _syncedAt);
+      await legacyLocal.saveQuote(_quote(), _syncedAt);
+      await legacyLocal.saveHistory(
+        symbol: 'AAPL',
+        prices: [_bar(DateTime.utc(2024, 1, 2))],
+        syncedAt: _syncedAt,
+        coverageFrom: DateTime.utc(2024, 1, 2),
+        coverageTo: DateTime.utc(2024, 1, 2),
+      );
+      expect(legacy.schemaVersion, 1);
+      expect(await legacy.marketDataDao.countAssets(), 1);
+    } finally {
+      await legacy.close();
+    }
+
+    final migrated = AppDatabase(NativeDatabase(file));
+    try {
+      expect(migrated.schemaVersion, 2);
+      final migratedLocal = LocalMarketDataSource(migrated.marketDataDao);
+      expect(await migratedLocal.findAsset('AAPL'), _asset());
+      expect(
+        (await migratedLocal.readProfile('AAPL'))?.companyName,
+        'Apple Inc.',
+      );
+      expect((await migratedLocal.readQuote('AAPL'))?.price, 191.5);
+      expect(await migrated.marketDataDao.countHistoricalPrices('AAPL'), 1);
+      expect(
+        await migratedLocal.readMetadata(CacheResourceKeys.quote('AAPL')),
+        isNotNull,
+      );
+      expect(await migrated.favoriteDao.getAll(), isEmpty);
+
+      final tables = await migrated
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table'",
+          )
+          .get();
+      final names = [for (final row in tables) row.read<String>('name')];
+      expect(
+        names,
+        containsAll([
+          'cached_assets',
+          'cached_asset_profiles',
+          'cached_market_quotes',
+          'cached_historical_prices',
+          'cache_metadata',
+          'favorites',
+        ]),
+      );
+
+      await migrated.favoriteDao.insertFavorite(
+        symbol: 'AAPL',
+        createdAt: _syncedAt,
+      );
+      expect(await migratedLocal.findAsset('AAPL'), _asset());
+      expect((await migrated.favoriteDao.getAll()).single.symbol, 'AAPL');
+    } finally {
+      await migrated.close();
+      await directory.delete(recursive: true);
+    }
+  });
 }
 
 final _syncedAt = DateTime.utc(2024, 6, 3, 12);
@@ -390,4 +462,25 @@ Future<void> _saveAssets(
     resourceKey: resourceKey,
     symbolList: assets.map((asset) => normalizeSymbol(asset.symbol)).join(','),
   );
+}
+
+/// Opens the market cache as it existed before favorites were added.
+final class _LegacyMarketCacheDatabase extends AppDatabase {
+  _LegacyMarketCacheDatabase(super.executor);
+
+  @override
+  int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (migrator) async {
+        await migrator.createTable(cachedAssets);
+        await migrator.createTable(cachedAssetProfiles);
+        await migrator.createTable(cachedMarketQuotes);
+        await migrator.createTable(cachedHistoricalPrices);
+        await migrator.createTable(cacheMetadata);
+      },
+    );
+  }
 }
