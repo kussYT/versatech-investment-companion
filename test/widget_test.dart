@@ -1,14 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:versatech_investment_companion/app/app.dart';
+import 'package:versatech_investment_companion/features/favorites/presentation/favorite_messages.dart';
+
+import 'support/memory_database.dart';
 
 void main() {
   testWidgets(
     'application starts and exposes four navigation destinations',
     (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: VersaTechApp(),
+        ProviderScope(
+          overrides: [emptyFavoritesOverride()],
+          child: const VersaTechApp(),
         ),
       );
       await tester.pumpAndSettle();
@@ -17,12 +21,8 @@ void main() {
       expect(find.text('Explorer'), findsOneWidget);
       expect(find.text('Portefeuille'), findsOneWidget);
       expect(find.text('Simulateur'), findsOneWidget);
-      expect(
-        find.text(
-          'Retrouvez une vue d\'ensemble pour apprendre à suivre des actions et des ETF.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.text(favoriteEmptyTitle), findsOneWidget);
+      expect(find.text(favoriteEmptyExplanation), findsOneWidget);
 
       await tester.tap(find.text('Explorer'));
       await tester.pumpAndSettle();
