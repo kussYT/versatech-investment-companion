@@ -15,6 +15,7 @@ import 'package:versatech_investment_companion/features/market_data/domain/cache
 import 'package:versatech_investment_companion/features/market_data/domain/entities/historical_price.dart';
 
 import 'support/fake_market_data_repository.dart';
+import '../../support/memory_database.dart';
 
 void main() {
   final clock = FixedClock(DateTime.utc(2024, 6, 15, 10));
@@ -25,6 +26,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          emptyFavoritesOverride(),
           marketDataRepositoryProvider.overrideWithValue(repository),
           clockProvider.overrideWithValue(clock),
         ],
@@ -308,6 +310,7 @@ Future<void> _open(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        emptyFavoritesOverride(),
         marketDataRepositoryProvider.overrideWithValue(repository),
         clockProvider.overrideWithValue(clock),
       ],

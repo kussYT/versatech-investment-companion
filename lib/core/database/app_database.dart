@@ -1,10 +1,12 @@
 import 'package:drift/drift.dart';
+import 'package:versatech_investment_companion/core/database/daos/favorite_dao.dart';
 import 'package:versatech_investment_companion/core/database/daos/market_data_dao.dart';
 import 'package:versatech_investment_companion/core/database/tables/cache_metadata.dart';
 import 'package:versatech_investment_companion/core/database/tables/cached_asset_profiles.dart';
 import 'package:versatech_investment_companion/core/database/tables/cached_assets.dart';
 import 'package:versatech_investment_companion/core/database/tables/cached_historical_prices.dart';
 import 'package:versatech_investment_companion/core/database/tables/cached_market_quotes.dart';
+import 'package:versatech_investment_companion/core/database/tables/favorites.dart';
 
 part 'app_database.g.dart';
 
@@ -15,13 +17,14 @@ part 'app_database.g.dart';
     CachedMarketQuotes,
     CachedHistoricalPrices,
     CacheMetadata,
+    Favorites,
   ],
-  daos: [MarketDataDao],
+  daos: [MarketDataDao, FavoriteDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
-  static const latestSchemaVersion = 1;
+  static const latestSchemaVersion = 2;
 
   @override
   int get schemaVersion => latestSchemaVersion;
@@ -34,8 +37,10 @@ class AppDatabase extends _$AppDatabase {
         if (from >= to) {
           return;
         }
-        // Schema 1 is the initial market-data cache.
-        // Add a branch here when [latestSchemaVersion] increases.
+        // Version 2 adds local favorites. Cache tables stay in place.
+        if (from < 2) {
+          await migrator.createTable(favorites);
+        }
       },
     );
   }
