@@ -33,6 +33,11 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Local secrets. The API key is passed with --dart-define, never stored here.
+.env
+.env.*
+!.env.example
+
 # Symbolication related
 app.*.symbols
 

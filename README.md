@@ -46,37 +46,43 @@ flutter run --dart-define=FMP_API_KEY=VOTRE_CLE
 
 L’interface démarre aussi sans clé. Le premier appel de marché échoue alors avec une erreur de configuration.
 
+## Fonctionnalités
+
+- **Accueil** : synthèse du portefeuille fictif, favoris, raccourcis et rappel pédagogique.
+- **Explorer** : recherche d’actions et d’ETF.
+- **Fiche d’actif** : profil, dernière cotation et graphique des clôtures.
+- **Favoris** : liste persistante sur l’appareil.
+- **Portefeuille** : positions fictives, montant investi, gain ou perte, répartition.
+- **Simulateur** : investissement mensuel passé (DCA), sans enregistrement ni projection.
+- **Hors connexion** : les données déjà enregistrées restent consultables. Elles sont signalées comme enregistrées, jamais comme temps réel.
+
+Les écrans passent par Riverpod. Les calculs vivent dans le domaine (`PortfolioMath`, `DcaEngine`). Le réseau et SQLite restent dans les dépôts. Le schéma Drift est en version 3.
+
+## Tests
+
+```bash
+flutter test
+```
+
+Les tests utilisent des dépôts en mémoire et des réponses fictives. Ils n’appellent pas Financial Modeling Prep.
+
 ## Architecture
 
 ```text
 lib/
-├── app/
-│   ├── app.dart
-│   ├── router/
-│   └── theme/
-├── core/
-│   ├── config/
-│   ├── errors/
-│   ├── network/
-│   └── widgets/
-├── features/
-│   ├── dashboard/presentation/
-│   ├── explorer/presentation/
-│   ├── market_data/
-│   │   ├── data/
-│   │   │   ├── datasources/
-│   │   │   ├── dto/
-│   │   │   ├── parsing/
-│   │   │   └── repositories/
-│   │   └── domain/
-│   │       ├── entities/
-│   │       └── repositories/
-│   ├── portfolio/presentation/
-│   └── simulator/presentation/
-└── main.dart
+├── app/                  # application, routeur, thème Midnight Finance
+├── core/                 # configuration, erreurs, réseau, base Drift, widgets
+└── features/
+    ├── dashboard/
+    ├── explorer/
+    ├── asset_detail/
+    ├── favorites/
+    ├── portfolio/        # présentation, application, domaine, dépôt
+    ├── simulator/
+    └── market_data/      # DTO, sources locale et distante, cache, domaine
 ```
 
-La configuration de l’application, la navigation, le thème, les écrans et les données de marché sont séparés. Le cache local et le schéma Drift seront ajoutés lorsque cette couche existera.
+Présentation, état, métier, réseau et persistance sont séparés. Une cotation invalide ne remplace pas une valeur déjà en cache.
 
 ## Principales dépendances
 
@@ -85,9 +91,8 @@ La configuration de l’application, la navigation, le thème, les écrans et le
 | `flutter_riverpod` 2.6.1 | Injection de dépendances et état |
 | `go_router` | Navigation, dont la barre inférieure |
 | `dio` 5.11.1 | Client HTTP vers Financial Modeling Prep |
-| `drift`, `sqlite3_flutter_libs`, `path_provider`, `path` | Cache de marché et favoris locaux |
-| `fl_chart` | Graphiques des historiques et simulations |
-| `intl` | Formatage des nombres et des dates |
+| `drift`, `sqlite3_flutter_libs`, `path_provider`, `path` | Cache de marché, favoris et portefeuille (schéma 3) |
+| `fl_chart` | Historique, répartition et simulation |
 | `build_runner`, `drift_dev` | Génération de code Drift |
 
 `drift` et `drift_dev` sont bornés (`drift` 2.28.x, `drift_dev` 2.28.0) : les versions plus récentes exigent un SDK Dart supérieur à 3.6.1.

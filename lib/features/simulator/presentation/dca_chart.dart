@@ -77,10 +77,14 @@ class DcaChart extends StatelessWidget {
                         reservedSize: 56,
                         interval: maxY - minY,
                         getTitlesWidget: (value, meta) {
-                          return Text(
-                            formatPortfolioAmount(value),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+                          return FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              formatPortfolioAmount(value),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
                             ),
                           );
                         },
@@ -99,10 +103,13 @@ class DcaChart extends StatelessWidget {
                           }
                           return Padding(
                             padding: const EdgeInsets.only(top: 6),
-                            child: Text(
-                              formatPurchaseDay(points[index].date),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                formatPurchaseDay(points[index].date),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
                             ),
                           );

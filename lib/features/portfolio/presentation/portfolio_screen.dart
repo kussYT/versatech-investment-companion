@@ -388,7 +388,15 @@ class _Figure extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(value, key: valueKey, style: theme.textTheme.headlineSmall),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            value,
+            key: valueKey,
+            style: theme.textTheme.headlineSmall,
+          ),
+        ),
       ],
     );
   }

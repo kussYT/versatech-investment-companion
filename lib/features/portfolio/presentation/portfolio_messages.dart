@@ -41,16 +41,29 @@ String portfolioExcludedMessage(String symbol) {
 }
 
 String formatPortfolioAmount(double value) {
-  final negative = value < 0;
-  final digits = value.abs().toStringAsFixed(2);
-  return negative ? '-$digits' : digits;
+  return _money(value);
 }
 
 String formatPortfolioSigned(double value) {
-  if (value > 0) {
-    return '+${formatPortfolioAmount(value)}';
+  final amount = formatPortfolioAmount(value);
+  if (amount.startsWith('-') || amount == '0.00' || amount == '—') {
+    return amount;
   }
-  return formatPortfolioAmount(value);
+  return '+$amount';
+}
+
+/// Two decimals. A value that rounds to zero stays `0.00`, never `-0.00`.
+/// A non-finite number is not shown as `NaN` or `Infinity`.
+String _money(double value) {
+  if (!value.isFinite) {
+    return '—';
+  }
+  final negative = value < 0;
+  final digits = value.abs().toStringAsFixed(2);
+  if (digits == '0.00') {
+    return '0.00';
+  }
+  return negative ? '-$digits' : digits;
 }
 
 String formatPortfolioPercent(double value) {
