@@ -13,9 +13,6 @@ class FavoritesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entries = ref.watch(favoriteEntriesProvider);
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accueil'),
@@ -24,42 +21,58 @@ class FavoritesScreen extends ConsumerWidget {
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 720),
-          child: entries.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => const _Message(
-              icon: Icons.error_outline,
-              title: favoriteReadErrorMessage,
-            ),
-            data: (items) {
-              if (items.isEmpty) {
-                return const _Message(
-                  icon: Icons.bookmark_border,
-                  title: favoriteEmptyTitle,
-                  explanation: favoriteEmptyExplanation,
-                );
-              }
-              return ListView(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                children: [
-                  Text('Favoris', style: theme.textTheme.headlineSmall),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Vos actions et ETF suivis sur cet appareil.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  for (final entry in items) ...[
-                    _FavoriteTile(entry: entry),
-                    const SizedBox(height: 12),
-                  ],
-                ],
-              );
-            },
+          child: const SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(20, 8, 20, 24),
+            child: FavoriteEntriesView(),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Compact favorite list shared with the dashboard. No second data source.
+class FavoriteEntriesView extends ConsumerWidget {
+  const FavoriteEntriesView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entries = ref.watch(favoriteEntriesProvider);
+    final theme = Theme.of(context);
+
+    return entries.when(
+      loading: () => Text(
+        favoriteLoadingMessage,
+        style: theme.textTheme.bodyLarge,
+      ),
+      error: (_, __) => const Text(favoriteReadErrorMessage),
+      data: (items) {
+        if (items.isEmpty) {
+          return const _Message(
+            icon: Icons.bookmark_border,
+            title: favoriteEmptyTitle,
+            explanation: favoriteEmptyExplanation,
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Favoris', style: theme.textTheme.titleLarge),
+            const SizedBox(height: 4),
+            Text(
+              'Vos actions et ETF suivis sur cet appareil.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 12),
+            for (final entry in items) ...[
+              _FavoriteTile(entry: entry),
+              const SizedBox(height: 12),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -184,22 +197,19 @@ class _Message extends StatelessWidget {
     final theme = Theme.of(context);
     final explanation = this.explanation;
 
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(24),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 36, color: theme.colorScheme.primary),
         const SizedBox(height: 16),
         Text(
           title,
-          textAlign: TextAlign.center,
           style: theme.textTheme.titleMedium,
         ),
         if (explanation != null) ...[
           const SizedBox(height: 8),
           Text(
             explanation,
-            textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
