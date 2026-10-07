@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:versatech_investment_companion/app/app.dart';
 import 'package:versatech_investment_companion/features/favorites/presentation/favorite_messages.dart';
+import 'package:versatech_investment_companion/features/portfolio/presentation/portfolio_messages.dart';
 
 import 'support/memory_database.dart';
 
@@ -11,7 +12,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [emptyFavoritesOverride()],
+          overrides: [
+            memoryDatabaseOverride(),
+            emptyFavoritesOverride(),
+          ],
           child: const VersaTechApp(),
         ),
       );
@@ -35,12 +39,8 @@ void main() {
 
       await tester.tap(find.text('Portefeuille'));
       await tester.pumpAndSettle();
-      expect(
-        find.text(
-          'Composez un portefeuille fictif et observez sa répartition.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.text(portfolioEmptyTitle), findsOneWidget);
+      expect(find.text(portfolioEmptyExplanation), findsOneWidget);
 
       await tester.tap(find.text('Simulateur'));
       await tester.pumpAndSettle();
@@ -50,6 +50,7 @@ void main() {
         ),
         findsOneWidget,
       );
+      await settleDriftStreams(tester);
     },
   );
 }

@@ -140,6 +140,10 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('favorite-entry-AAPL')));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Historique des clôtures'),
+      200,
+    );
     expect(find.text('Historique des clôtures'), findsOneWidget);
     expect(find.byTooltip('Retirer AAPL des favoris'), findsOneWidget);
     await settleDriftStreams(tester);

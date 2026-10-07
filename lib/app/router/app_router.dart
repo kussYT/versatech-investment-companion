@@ -5,6 +5,7 @@ import 'package:versatech_investment_companion/features/dashboard/presentation/d
 import 'package:versatech_investment_companion/features/asset_detail/presentation/asset_detail_screen.dart';
 import 'package:versatech_investment_companion/features/explorer/presentation/explorer_screen.dart';
 import 'package:versatech_investment_companion/features/portfolio/presentation/portfolio_screen.dart';
+import 'package:versatech_investment_companion/features/portfolio/presentation/position_form_screen.dart';
 import 'package:versatech_investment_companion/features/simulator/presentation/simulator_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -61,6 +62,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/portfolio/new',
+        builder: (context, state) {
+          return PositionFormScreen(
+            initialSymbol: state.uri.queryParameters['symbol'] ?? '',
+          );
+        },
       ),
     ],
   );
