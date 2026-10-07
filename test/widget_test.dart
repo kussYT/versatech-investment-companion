@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:versatech_investment_companion/app/app.dart';
 import 'package:versatech_investment_companion/features/favorites/presentation/favorite_messages.dart';
 import 'package:versatech_investment_companion/features/portfolio/presentation/portfolio_messages.dart';
+import 'package:versatech_investment_companion/features/simulator/presentation/dca_messages.dart';
 
 import 'support/memory_database.dart';
 
@@ -44,12 +45,8 @@ void main() {
 
       await tester.tap(find.text('Simulateur'));
       await tester.pumpAndSettle();
-      expect(
-        find.text(
-          'Simulez un investissement pour visualiser son évolution dans le temps.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.text(dcaEducationRegular), findsOneWidget);
+      expect(find.text(dcaEmptyChartMessage), findsOneWidget);
       await settleDriftStreams(tester);
     },
   );
