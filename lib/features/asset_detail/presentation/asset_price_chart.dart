@@ -58,10 +58,14 @@ class AssetPriceChart extends StatelessWidget {
                   reservedSize: 52,
                   interval: maxY - minY,
                   getTitlesWidget: (value, meta) {
-                    return Text(
-                      formatDetailAmount(value),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                    return FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        formatDetailAmount(value),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     );
                   },
@@ -80,10 +84,13 @@ class AssetPriceChart extends StatelessWidget {
                     }
                     return Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: Text(
-                        formatDetailDate(prices[index].date),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          formatDetailDate(prices[index].date),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
                     );

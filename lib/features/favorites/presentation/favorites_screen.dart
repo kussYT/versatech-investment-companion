@@ -116,6 +116,8 @@ class _FavoriteTile extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),

@@ -38,16 +38,23 @@ String assetDetailFailureMessage(Failure failure) {
 }
 
 String formatDetailAmount(double value) {
+  if (!value.isFinite) {
+    return '—';
+  }
   final negative = value < 0;
   final digits = value.abs().toStringAsFixed(2);
+  if (digits == '0.00') {
+    return '0.00';
+  }
   return negative ? '-$digits' : digits;
 }
 
 String formatSignedAmount(double value) {
-  if (value > 0) {
-    return '+${formatDetailAmount(value)}';
+  final amount = formatDetailAmount(value);
+  if (amount.startsWith('-') || amount == '0.00' || amount == '—') {
+    return amount;
   }
-  return formatDetailAmount(value);
+  return '+$amount';
 }
 
 String formatSignedPercent(double value) {
