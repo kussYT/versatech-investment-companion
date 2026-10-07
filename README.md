@@ -2,7 +2,7 @@
 
 Compagnon pédagogique pour les débutants en investissement. L’application permet d’explorer des actions et des ETF, de consulter leurs historiques, de gérer des favoris, de constituer un portefeuille fictif et de réaliser des simulations.
 
-Le socle visuel, l’écran Explorer, la fiche d’actif et le cache Drift sont en place. Les favoris persistants sont désormais disponibles : ils sont enregistrés dans la base locale, restent consultables hors connexion et ne dépendent pas de Financial Modeling Prep. Le portefeuille fictif et les simulations ne sont pas encore implémentés.
+Le socle visuel, l’écran Explorer, la fiche d’actif et le cache Drift sont en place. Les favoris persistants sont disponibles. Le portefeuille fictif est enregistré sur l’appareil : positions, montants investis, valorisation à partir du cache de marché et répartition. Il ne passe aucun ordre réel et ne dépend pas d’un appel réseau pour être modifié. Les simulations ne sont pas encore implémentées.
 
 ## Périmètre Actions et ETF
 

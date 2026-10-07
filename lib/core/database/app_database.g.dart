@@ -2254,6 +2254,353 @@ class FavoritesCompanion extends UpdateCompanion<FavoriteRow> {
   }
 }
 
+class $PortfolioPositionsTable extends PortfolioPositions
+    with TableInfo<$PortfolioPositionsTable, PortfolioPositionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PortfolioPositionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _symbolMeta = const VerificationMeta('symbol');
+  @override
+  late final GeneratedColumn<String> symbol = GeneratedColumn<String>(
+      'symbol', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _quantityMeta =
+      const VerificationMeta('quantity');
+  @override
+  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
+      'quantity', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _purchasePriceMeta =
+      const VerificationMeta('purchasePrice');
+  @override
+  late final GeneratedColumn<double> purchasePrice = GeneratedColumn<double>(
+      'purchase_price', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _purchaseDateMeta =
+      const VerificationMeta('purchaseDate');
+  @override
+  late final GeneratedColumn<DateTime> purchaseDate = GeneratedColumn<DateTime>(
+      'purchase_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, symbol, quantity, purchasePrice, purchaseDate, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'portfolio_positions';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<PortfolioPositionRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('symbol')) {
+      context.handle(_symbolMeta,
+          symbol.isAcceptableOrUnknown(data['symbol']!, _symbolMeta));
+    } else if (isInserting) {
+      context.missing(_symbolMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(_quantityMeta,
+          quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta));
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('purchase_price')) {
+      context.handle(
+          _purchasePriceMeta,
+          purchasePrice.isAcceptableOrUnknown(
+              data['purchase_price']!, _purchasePriceMeta));
+    } else if (isInserting) {
+      context.missing(_purchasePriceMeta);
+    }
+    if (data.containsKey('purchase_date')) {
+      context.handle(
+          _purchaseDateMeta,
+          purchaseDate.isAcceptableOrUnknown(
+              data['purchase_date']!, _purchaseDateMeta));
+    } else if (isInserting) {
+      context.missing(_purchaseDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PortfolioPositionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PortfolioPositionRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      symbol: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}symbol'])!,
+      quantity: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}quantity'])!,
+      purchasePrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}purchase_price'])!,
+      purchaseDate: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}purchase_date'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $PortfolioPositionsTable createAlias(String alias) {
+    return $PortfolioPositionsTable(attachedDatabase, alias);
+  }
+}
+
+class PortfolioPositionRow extends DataClass
+    implements Insertable<PortfolioPositionRow> {
+  final int id;
+  final String symbol;
+  final double quantity;
+  final double purchasePrice;
+  final DateTime purchaseDate;
+  final DateTime createdAt;
+  const PortfolioPositionRow(
+      {required this.id,
+      required this.symbol,
+      required this.quantity,
+      required this.purchasePrice,
+      required this.purchaseDate,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['symbol'] = Variable<String>(symbol);
+    map['quantity'] = Variable<double>(quantity);
+    map['purchase_price'] = Variable<double>(purchasePrice);
+    map['purchase_date'] = Variable<DateTime>(purchaseDate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  PortfolioPositionsCompanion toCompanion(bool nullToAbsent) {
+    return PortfolioPositionsCompanion(
+      id: Value(id),
+      symbol: Value(symbol),
+      quantity: Value(quantity),
+      purchasePrice: Value(purchasePrice),
+      purchaseDate: Value(purchaseDate),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PortfolioPositionRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PortfolioPositionRow(
+      id: serializer.fromJson<int>(json['id']),
+      symbol: serializer.fromJson<String>(json['symbol']),
+      quantity: serializer.fromJson<double>(json['quantity']),
+      purchasePrice: serializer.fromJson<double>(json['purchasePrice']),
+      purchaseDate: serializer.fromJson<DateTime>(json['purchaseDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'symbol': serializer.toJson<String>(symbol),
+      'quantity': serializer.toJson<double>(quantity),
+      'purchasePrice': serializer.toJson<double>(purchasePrice),
+      'purchaseDate': serializer.toJson<DateTime>(purchaseDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  PortfolioPositionRow copyWith(
+          {int? id,
+          String? symbol,
+          double? quantity,
+          double? purchasePrice,
+          DateTime? purchaseDate,
+          DateTime? createdAt}) =>
+      PortfolioPositionRow(
+        id: id ?? this.id,
+        symbol: symbol ?? this.symbol,
+        quantity: quantity ?? this.quantity,
+        purchasePrice: purchasePrice ?? this.purchasePrice,
+        purchaseDate: purchaseDate ?? this.purchaseDate,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  PortfolioPositionRow copyWithCompanion(PortfolioPositionsCompanion data) {
+    return PortfolioPositionRow(
+      id: data.id.present ? data.id.value : this.id,
+      symbol: data.symbol.present ? data.symbol.value : this.symbol,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      purchasePrice: data.purchasePrice.present
+          ? data.purchasePrice.value
+          : this.purchasePrice,
+      purchaseDate: data.purchaseDate.present
+          ? data.purchaseDate.value
+          : this.purchaseDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PortfolioPositionRow(')
+          ..write('id: $id, ')
+          ..write('symbol: $symbol, ')
+          ..write('quantity: $quantity, ')
+          ..write('purchasePrice: $purchasePrice, ')
+          ..write('purchaseDate: $purchaseDate, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, symbol, quantity, purchasePrice, purchaseDate, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PortfolioPositionRow &&
+          other.id == this.id &&
+          other.symbol == this.symbol &&
+          other.quantity == this.quantity &&
+          other.purchasePrice == this.purchasePrice &&
+          other.purchaseDate == this.purchaseDate &&
+          other.createdAt == this.createdAt);
+}
+
+class PortfolioPositionsCompanion
+    extends UpdateCompanion<PortfolioPositionRow> {
+  final Value<int> id;
+  final Value<String> symbol;
+  final Value<double> quantity;
+  final Value<double> purchasePrice;
+  final Value<DateTime> purchaseDate;
+  final Value<DateTime> createdAt;
+  const PortfolioPositionsCompanion({
+    this.id = const Value.absent(),
+    this.symbol = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.purchasePrice = const Value.absent(),
+    this.purchaseDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  PortfolioPositionsCompanion.insert({
+    this.id = const Value.absent(),
+    required String symbol,
+    required double quantity,
+    required double purchasePrice,
+    required DateTime purchaseDate,
+    required DateTime createdAt,
+  })  : symbol = Value(symbol),
+        quantity = Value(quantity),
+        purchasePrice = Value(purchasePrice),
+        purchaseDate = Value(purchaseDate),
+        createdAt = Value(createdAt);
+  static Insertable<PortfolioPositionRow> custom({
+    Expression<int>? id,
+    Expression<String>? symbol,
+    Expression<double>? quantity,
+    Expression<double>? purchasePrice,
+    Expression<DateTime>? purchaseDate,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (symbol != null) 'symbol': symbol,
+      if (quantity != null) 'quantity': quantity,
+      if (purchasePrice != null) 'purchase_price': purchasePrice,
+      if (purchaseDate != null) 'purchase_date': purchaseDate,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  PortfolioPositionsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? symbol,
+      Value<double>? quantity,
+      Value<double>? purchasePrice,
+      Value<DateTime>? purchaseDate,
+      Value<DateTime>? createdAt}) {
+    return PortfolioPositionsCompanion(
+      id: id ?? this.id,
+      symbol: symbol ?? this.symbol,
+      quantity: quantity ?? this.quantity,
+      purchasePrice: purchasePrice ?? this.purchasePrice,
+      purchaseDate: purchaseDate ?? this.purchaseDate,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (symbol.present) {
+      map['symbol'] = Variable<String>(symbol.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<double>(quantity.value);
+    }
+    if (purchasePrice.present) {
+      map['purchase_price'] = Variable<double>(purchasePrice.value);
+    }
+    if (purchaseDate.present) {
+      map['purchase_date'] = Variable<DateTime>(purchaseDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PortfolioPositionsCompanion(')
+          ..write('id: $id, ')
+          ..write('symbol: $symbol, ')
+          ..write('quantity: $quantity, ')
+          ..write('purchasePrice: $purchasePrice, ')
+          ..write('purchaseDate: $purchaseDate, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2266,8 +2613,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $CachedHistoricalPricesTable(this);
   late final $CacheMetadataTable cacheMetadata = $CacheMetadataTable(this);
   late final $FavoritesTable favorites = $FavoritesTable(this);
+  late final $PortfolioPositionsTable portfolioPositions =
+      $PortfolioPositionsTable(this);
   late final MarketDataDao marketDataDao = MarketDataDao(this as AppDatabase);
   late final FavoriteDao favoriteDao = FavoriteDao(this as AppDatabase);
+  late final PortfolioPositionDao portfolioPositionDao =
+      PortfolioPositionDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2278,7 +2629,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         cachedMarketQuotes,
         cachedHistoricalPrices,
         cacheMetadata,
-        favorites
+        favorites,
+        portfolioPositions
       ];
 }
 
@@ -3468,6 +3820,194 @@ typedef $$FavoritesTableProcessedTableManager = ProcessedTableManager<
     (FavoriteRow, BaseReferences<_$AppDatabase, $FavoritesTable, FavoriteRow>),
     FavoriteRow,
     PrefetchHooks Function()>;
+typedef $$PortfolioPositionsTableCreateCompanionBuilder
+    = PortfolioPositionsCompanion Function({
+  Value<int> id,
+  required String symbol,
+  required double quantity,
+  required double purchasePrice,
+  required DateTime purchaseDate,
+  required DateTime createdAt,
+});
+typedef $$PortfolioPositionsTableUpdateCompanionBuilder
+    = PortfolioPositionsCompanion Function({
+  Value<int> id,
+  Value<String> symbol,
+  Value<double> quantity,
+  Value<double> purchasePrice,
+  Value<DateTime> purchaseDate,
+  Value<DateTime> createdAt,
+});
+
+class $$PortfolioPositionsTableFilterComposer
+    extends Composer<_$AppDatabase, $PortfolioPositionsTable> {
+  $$PortfolioPositionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get symbol => $composableBuilder(
+      column: $table.symbol, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get quantity => $composableBuilder(
+      column: $table.quantity, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get purchasePrice => $composableBuilder(
+      column: $table.purchasePrice, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get purchaseDate => $composableBuilder(
+      column: $table.purchaseDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$PortfolioPositionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PortfolioPositionsTable> {
+  $$PortfolioPositionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get symbol => $composableBuilder(
+      column: $table.symbol, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get quantity => $composableBuilder(
+      column: $table.quantity, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get purchasePrice => $composableBuilder(
+      column: $table.purchasePrice,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get purchaseDate => $composableBuilder(
+      column: $table.purchaseDate,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$PortfolioPositionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PortfolioPositionsTable> {
+  $$PortfolioPositionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get symbol =>
+      $composableBuilder(column: $table.symbol, builder: (column) => column);
+
+  GeneratedColumn<double> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<double> get purchasePrice => $composableBuilder(
+      column: $table.purchasePrice, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get purchaseDate => $composableBuilder(
+      column: $table.purchaseDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$PortfolioPositionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PortfolioPositionsTable,
+    PortfolioPositionRow,
+    $$PortfolioPositionsTableFilterComposer,
+    $$PortfolioPositionsTableOrderingComposer,
+    $$PortfolioPositionsTableAnnotationComposer,
+    $$PortfolioPositionsTableCreateCompanionBuilder,
+    $$PortfolioPositionsTableUpdateCompanionBuilder,
+    (
+      PortfolioPositionRow,
+      BaseReferences<_$AppDatabase, $PortfolioPositionsTable,
+          PortfolioPositionRow>
+    ),
+    PortfolioPositionRow,
+    PrefetchHooks Function()> {
+  $$PortfolioPositionsTableTableManager(
+      _$AppDatabase db, $PortfolioPositionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PortfolioPositionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PortfolioPositionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PortfolioPositionsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> symbol = const Value.absent(),
+            Value<double> quantity = const Value.absent(),
+            Value<double> purchasePrice = const Value.absent(),
+            Value<DateTime> purchaseDate = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              PortfolioPositionsCompanion(
+            id: id,
+            symbol: symbol,
+            quantity: quantity,
+            purchasePrice: purchasePrice,
+            purchaseDate: purchaseDate,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String symbol,
+            required double quantity,
+            required double purchasePrice,
+            required DateTime purchaseDate,
+            required DateTime createdAt,
+          }) =>
+              PortfolioPositionsCompanion.insert(
+            id: id,
+            symbol: symbol,
+            quantity: quantity,
+            purchasePrice: purchasePrice,
+            purchaseDate: purchaseDate,
+            createdAt: createdAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$PortfolioPositionsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $PortfolioPositionsTable,
+    PortfolioPositionRow,
+    $$PortfolioPositionsTableFilterComposer,
+    $$PortfolioPositionsTableOrderingComposer,
+    $$PortfolioPositionsTableAnnotationComposer,
+    $$PortfolioPositionsTableCreateCompanionBuilder,
+    $$PortfolioPositionsTableUpdateCompanionBuilder,
+    (
+      PortfolioPositionRow,
+      BaseReferences<_$AppDatabase, $PortfolioPositionsTable,
+          PortfolioPositionRow>
+    ),
+    PortfolioPositionRow,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3485,4 +4025,6 @@ class $AppDatabaseManager {
       $$CacheMetadataTableTableManager(_db, _db.cacheMetadata);
   $$FavoritesTableTableManager get favorites =>
       $$FavoritesTableTableManager(_db, _db.favorites);
+  $$PortfolioPositionsTableTableManager get portfolioPositions =>
+      $$PortfolioPositionsTableTableManager(_db, _db.portfolioPositions);
 }
