@@ -8,3 +8,5 @@ const favoriteEmptyTitle = 'Aucun favori pour le moment';
 
 const favoriteEmptyExplanation =
     'Ajoutez des actions ou des ETF depuis Explorer pour les retrouver ici.';
+
+const favoriteLoadingMessage = 'Chargement des favoris';
