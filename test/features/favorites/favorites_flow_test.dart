@@ -138,6 +138,8 @@ void main() {
     expect(find.text('N/A'), findsNothing);
     expect(find.textContaining('Inconnu'), findsNothing);
 
+    await tester
+        .ensureVisible(find.byKey(const ValueKey('favorite-entry-AAPL')));
     await tester.tap(find.byKey(const ValueKey('favorite-entry-AAPL')));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(

@@ -217,6 +217,7 @@ void main() {
       'AAPL',
     );
     expect(find.text(dcaEducationRegular), findsOneWidget);
+    await settleDriftStreams(tester);
   });
 
   testWidgets('counts the final value up and then stays exact', (tester) async {

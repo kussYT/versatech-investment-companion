@@ -2,7 +2,7 @@
 
 Compagnon pédagogique pour les débutants en investissement. L’application permet d’explorer des actions et des ETF, de consulter leurs historiques, de gérer des favoris, de constituer un portefeuille fictif et de réaliser des simulations.
 
-Le socle visuel, l’écran Explorer, la fiche d’actif et le cache Drift sont en place. Les favoris persistants sont disponibles. Le portefeuille fictif est enregistré sur l’appareil : positions, montants investis, valorisation à partir du cache de marché et répartition. Il ne passe aucun ordre réel et ne dépend pas d’un appel réseau pour être modifié. Le simulateur DCA mensuel estime un investissement passé à partir de l’historique déjà fourni par le cache de marché. Il n’enregistre pas la simulation et ne projette pas l’avenir.
+Le socle visuel, l’écran Explorer, la fiche d’actif et le cache Drift sont en place. Les favoris persistants sont disponibles. Le portefeuille fictif est enregistré sur l’appareil : positions, montants investis, valorisation à partir du cache de marché et répartition. Il ne passe aucun ordre réel et ne dépend pas d’un appel réseau pour être modifié. Le simulateur DCA mensuel estime un investissement passé à partir de l’historique déjà fourni par le cache de marché. Il n’enregistre pas la simulation et ne projette pas l’avenir. L’accueil rassemble le portefeuille, les favoris et les raccourcis. Ses cartes apparaissent en fondu : c’est la troisième animation, après le bouton favori et le compteur du simulateur.
 
 ## Périmètre Actions et ETF
 
