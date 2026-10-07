@@ -375,11 +375,15 @@ class _Result extends StatelessWidget {
         Semantics(
           label:
               '$dcaFinalValueLabel ${formatPortfolioAmount(result.finalValue)}',
-          child: AnimatedFinancialValue(
-            value: result.finalValue,
-            formatter: formatPortfolioAmount,
-            style: theme.textTheme.displaySmall,
-            textKey: const Key('dca-final-value'),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: AnimatedFinancialValue(
+              value: result.finalValue,
+              formatter: formatPortfolioAmount,
+              style: theme.textTheme.displaySmall,
+              textKey: const Key('dca-final-value'),
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -483,10 +487,14 @@ class _Figure extends StatelessWidget {
             label,
             style: theme.textTheme.titleMedium,
           ),
-          Text(
-            value,
-            key: valueKey,
-            style: theme.textTheme.headlineMedium,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              key: valueKey,
+              style: theme.textTheme.headlineMedium,
+            ),
           ),
         ],
       ),

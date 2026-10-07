@@ -217,7 +217,12 @@ class _Header extends StatelessWidget {
         Text(state.symbol, style: theme.textTheme.headlineSmall),
         if (name.isNotEmpty) ...[
           const SizedBox(height: 4),
-          Text(name, style: theme.textTheme.titleMedium),
+          Text(
+            name,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium,
+          ),
         ],
         if (assetType != null) ...[
           const SizedBox(height: 8),
@@ -329,7 +334,11 @@ class _QuoteSection extends StatelessWidget {
           children: [
             Text('Dernier prix connu', style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
-            Text(priceLabel, style: theme.textTheme.headlineMedium),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(priceLabel, style: theme.textTheme.headlineMedium),
+            ),
             const SizedBox(height: 8),
             Row(
               children: [
