@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:versatech_investment_companion/app/theme/app_colors.dart';
 import 'package:versatech_investment_companion/features/asset_detail/application/asset_detail_controller.dart';
 import 'package:versatech_investment_companion/features/asset_detail/application/asset_detail_state.dart';
@@ -97,6 +98,19 @@ class _AssetDetailScreenState extends ConsumerState<AssetDetailScreen> {
                 )
               else ...[
                 _Header(state: state, type: type),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  key: const Key('add-to-portfolio'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                  onPressed: () {
+                    final symbol = Uri.encodeQueryComponent(state.symbol);
+                    context.push('/portfolio/new?symbol=$symbol');
+                  },
+                  icon: const Icon(Icons.playlist_add),
+                  label: const Text('Ajouter au portefeuille'),
+                ),
                 const SizedBox(height: 16),
                 _QuoteSection(section: state.quote, currency: _currency(state)),
                 const SizedBox(height: 12),

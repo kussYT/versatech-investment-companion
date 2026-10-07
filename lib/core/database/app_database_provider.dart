@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:versatech_investment_companion/core/database/app_database.dart';
 import 'package:versatech_investment_companion/core/database/daos/favorite_dao.dart';
 import 'package:versatech_investment_companion/core/database/daos/market_data_dao.dart';
+import 'package:versatech_investment_companion/core/database/daos/portfolio_position_dao.dart';
 import 'package:versatech_investment_companion/core/database/database_connection.dart';
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
@@ -16,4 +17,8 @@ final marketDataDaoProvider = Provider<MarketDataDao>((ref) {
 
 final favoriteDaoProvider = Provider<FavoriteDao>((ref) {
   return ref.watch(appDatabaseProvider).favoriteDao;
+});
+
+final portfolioPositionDaoProvider = Provider<PortfolioPositionDao>((ref) {
+  return ref.watch(appDatabaseProvider).portfolioPositionDao;
 });
