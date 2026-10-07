@@ -250,6 +250,8 @@ class _AssetCard extends StatelessWidget {
                               const SizedBox(height: 2),
                               Text(
                                 asset.name,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: theme.colorScheme.onSurfaceVariant,
                                 ),
