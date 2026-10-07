@@ -55,9 +55,10 @@ void main() {
 
     await _open(tester, repository: repository, clock: clock);
 
-    expect(find.text('Chargement du profil'), findsOneWidget);
     expect(find.text('Chargement de la cotation'), findsOneWidget);
     expect(find.text('Chargement de l’historique'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Chargement du profil'), 200);
+    expect(find.text('Chargement du profil'), findsOneWidget);
     expect(find.text('189.25'), findsNothing);
 
     CompleterGate.release(repository);
@@ -110,7 +111,15 @@ void main() {
   testWidgets('shows the close-price history and its chart', (tester) async {
     await _open(tester, repository: _ready(), clock: clock);
 
+    await tester.scrollUntilVisible(
+      find.text('Historique des clôtures'),
+      200,
+    );
     expect(find.text('Historique des clôtures'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('close-price-chart')),
+      200,
+    );
     expect(find.byKey(const Key('close-price-chart')), findsOneWidget);
     expect(find.text('01/03/2024'), findsOneWidget);
     expect(find.text('10/06/2024'), findsOneWidget);

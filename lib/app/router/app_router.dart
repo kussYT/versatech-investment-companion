@@ -57,7 +57,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/simulator',
-                builder: (context, state) => const SimulatorScreen(),
+                builder: (context, state) {
+                  return SimulatorScreen(
+                    initialSymbol: state.uri.queryParameters['symbol'] ?? '',
+                  );
+                },
               ),
             ],
           ),

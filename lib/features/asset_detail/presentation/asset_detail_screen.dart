@@ -9,6 +9,7 @@ import 'package:versatech_investment_companion/features/asset_detail/application
 import 'package:versatech_investment_companion/features/asset_detail/presentation/asset_detail_messages.dart';
 import 'package:versatech_investment_companion/features/asset_detail/presentation/asset_price_chart.dart';
 import 'package:versatech_investment_companion/features/favorites/presentation/favorite_button.dart';
+import 'package:versatech_investment_companion/features/simulator/application/dca_controller.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/asset.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/asset_profile.dart';
 import 'package:versatech_investment_companion/features/market_data/domain/entities/market_quote.dart';
@@ -110,6 +111,21 @@ class _AssetDetailScreenState extends ConsumerState<AssetDetailScreen> {
                   },
                   icon: const Icon(Icons.playlist_add),
                   label: const Text('Ajouter au portefeuille'),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  key: const Key('simulate-investment'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                  onPressed: () {
+                    ref.read(dcaRequestedSymbolProvider.notifier).state =
+                        state.symbol;
+                    final symbol = Uri.encodeQueryComponent(state.symbol);
+                    context.go('/simulator?symbol=$symbol');
+                  },
+                  icon: const Icon(Icons.insights_outlined),
+                  label: const Text('Simuler un investissement'),
                 ),
                 const SizedBox(height: 16),
                 _QuoteSection(section: state.quote, currency: _currency(state)),
