@@ -33,6 +33,15 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
   final Color gain;
   final Color loss;
 
+  /// Asset identity on the allocation ring. Gain and loss stay off this list.
+  static const chartPalette = <Color>[
+    AppColors.primaryBlue,
+    AppColors.cyan,
+    AppColors.violet,
+    Color(0xFF8FB0FF),
+    Color(0xFF5C6B8A),
+  ];
+
   static AppSemanticColors of(BuildContext context) {
     final colors = Theme.of(context).extension<AppSemanticColors>();
     if (colors == null) {

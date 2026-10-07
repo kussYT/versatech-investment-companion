@@ -208,9 +208,13 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('asset-BRK.B')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Historique des clôtures'), findsOneWidget);
     expect(find.text('BRK.B'), findsWidgets);
     expect(find.text('Action'), findsWidgets);
+    await tester.scrollUntilVisible(
+      find.text('Historique des clôtures'),
+      200,
+    );
+    expect(find.text('Historique des clôtures'), findsOneWidget);
   });
 }
 
