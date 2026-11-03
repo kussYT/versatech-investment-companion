@@ -156,6 +156,23 @@ void main() {
     expect(result.remoteFailure?.detail, isNull);
   });
 
+  test('serves a fresh search without calling the remote source', () async {
+    await local.saveAssets(
+      assets: [_asset()],
+      syncedAt: clock.now(),
+      resourceKey: 'search:aapl',
+      symbolList: 'AAPL',
+    );
+    remote.assets = [_asset(symbol: 'MSFT', name: 'Microsoft')];
+
+    final result = await repository.searchAssets('AAPL');
+
+    expect(remote.searchCalls, 0);
+    expect(result.origin, DataOrigin.cache);
+    expect(result.isStale, isFalse);
+    expect(result.data.single.symbol, 'AAPL');
+  });
+
   test('persists a successful remote search', () async {
     remote.assets = [_asset(symbol: ' aapl ')];
 
@@ -266,6 +283,7 @@ class _FakeRemote implements MarketDataRemote {
 
   int quoteCalls = 0;
   int historyCalls = 0;
+  int searchCalls = 0;
   final historyRequests = <({DateTime from, DateTime to})>[];
 
   void _check() {
@@ -277,6 +295,7 @@ class _FakeRemote implements MarketDataRemote {
 
   @override
   Future<List<Asset>> searchAssets(String query) async {
+    searchCalls += 1;
     _check();
     return assets;
   }
