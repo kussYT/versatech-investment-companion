@@ -101,15 +101,17 @@ class DcaChart extends StatelessWidget {
                           if (!showLabel || (value - index).abs() > 0.01) {
                             return const SizedBox.shrink();
                           }
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                formatPurchaseDay(points[index].date),
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
+                          return SideTitleWidget(
+                            meta: meta,
+                            space: 6,
+                            fitInside: SideTitleFitInsideData.fromTitleMeta(
+                              meta,
+                              distanceFromEdge: 4,
+                            ),
+                            child: Text(
+                              formatPurchaseDay(points[index].date),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
                           );
