@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:versatech_investment_companion/core/config/app_config.dart';
 import 'package:versatech_investment_companion/core/errors/app_exception.dart';
 import 'package:versatech_investment_companion/core/network/dio_provider.dart';
+import 'package:versatech_investment_companion/core/network/network_exception_mapper.dart';
 import 'package:versatech_investment_companion/features/market_data/data/dto/asset_dto.dart';
 import 'package:versatech_investment_companion/features/market_data/data/dto/asset_profile_dto.dart';
 import 'package:versatech_investment_companion/features/market_data/data/dto/historical_price_dto.dart';
@@ -20,6 +21,10 @@ import 'package:versatech_investment_companion/features/market_data/domain/entit
 /// otherwise from `profile`, which publishes those flags. That lookup stays
 /// in this source so another endpoint can replace it without touching the
 /// domain.
+///
+/// At most [searchLimit] rows are resolved, and at most [searchLimit] profile
+/// calls are made. One failed profile is skipped. A transport or quota failure
+/// is reported when it leaves no asset, and is not hidden behind an empty list.
 class FmpMarketDataSource {
   FmpMarketDataSource({
     required Dio dio,
@@ -31,27 +36,61 @@ class FmpMarketDataSource {
   static const profilePath = 'profile';
   static const quotePath = 'quote';
   static const historicalPath = 'historical-price-eod/full';
-  static const searchLimit = 20;
+  static const searchLimit = 5;
 
   final Dio _dio;
   final AppConfig _config;
 
   Future<List<Asset>> searchAssets(String query) async {
-    final rows = asJsonList(
-      await _get(searchPath, {
-        'query': _requiredText(query, 'Search query is empty.'),
-        'limit': searchLimit,
-      }),
-    );
-
+    final rows = asJsonList(await _readSearch(query)).take(searchLimit);
     final assets = <Asset>[];
+    AppException? unresolved;
+    var profileLookups = 0;
+
     for (final row in rows) {
-      final json = await _withInstrumentType(asJsonMap(row, 'asset'));
+      final Map<String, dynamic> json;
       try {
-        assets.add(AssetDto.fromJson(json).toDomain());
-      } on UnsupportedAssetTypeException {
+        json = asJsonMap(row, 'asset');
+      } on AppException catch (error) {
+        if (_haltSearch(error, assets)) {
+          return assets;
+        }
+        unresolved ??= error;
         continue;
       }
+
+      if (json['isEtf'] is! bool) {
+        if (profileLookups >= searchLimit) {
+          break;
+        }
+        profileLookups += 1;
+      }
+
+      try {
+        final enriched = await _withInstrumentType(json);
+        assets.add(AssetDto.fromJson(enriched).toDomain());
+      } on UnsupportedAssetTypeException {
+        continue;
+      } on AppException catch (error) {
+        if (_haltSearch(error, assets)) {
+          return assets;
+        }
+        unresolved ??= error;
+      } on DioException catch (error) {
+        final mapped = mapDioException(error);
+        if (_haltSearch(mapped, assets)) {
+          return assets;
+        }
+        unresolved ??= mapped;
+      } on FormatException {
+        unresolved ??= InvalidMarketDataException(
+          'The response was not valid JSON.',
+        );
+      }
+    }
+
+    if (assets.isEmpty && unresolved != null) {
+      throw unresolved;
     }
     return assets;
   }
@@ -102,6 +141,36 @@ class FmpMarketDataSource {
           in HistoricalPriceDto.fromJsonList(_historicalRows(data)))
         price.toDomain(),
     ];
+  }
+
+  Future<Object?> _readSearch(String query) async {
+    try {
+      return await _get(searchPath, {
+        'query': _requiredText(query, 'Search query is empty.'),
+        'limit': searchLimit,
+      });
+    } on DioException catch (error) {
+      throw mapDioException(error);
+    } on FormatException {
+      throw InvalidMarketDataException('The response was not valid JSON.');
+    }
+  }
+
+  /// Stops the search when a transport or quota failure is systemic.
+  /// An empty result throws that failure instead of looking like no match.
+  bool _haltSearch(AppException error, List<Asset> assets) {
+    final systemic = error is RateLimitException ||
+        error is NetworkUnavailableException ||
+        error is RequestTimeoutException ||
+        error is UnauthorizedException ||
+        error is MissingApiKeyException;
+    if (!systemic) {
+      return false;
+    }
+    if (assets.isEmpty) {
+      throw error;
+    }
+    return true;
   }
 
   Future<Object?> _get(
